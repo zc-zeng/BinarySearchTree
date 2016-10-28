@@ -1,0 +1,84 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define DataType int
+typedef struct BinarySearchTree{
+	struct BinarySearchTree *left;
+	struct BinarySearchTree *right;
+	DataType data;
+}*bst;
+
+bst FindMin(bst root){
+	if(root == NULL){
+		fprintf(stderr, "FindMin error: is empty!!!\n");
+		return NULL;
+	}
+
+	bst tmp = root;
+	while(tmp->left != NULL){
+		tmp = tmp->left;
+	}
+
+	return tmp;
+}
+
+bst FindMax(bst root){
+	if(root == NULL){
+		fprintf(stderr, "FindMax error: is empty!!!\n");
+		return NULL;
+	}
+
+	bst tmp = root;
+	while(tmp->right != NULL){
+		tmp = tmp->right;
+	}
+	
+	return tmp;
+}
+
+bst Insert(bst root, DataType data){
+	if(root == NULL){
+		if((root = (bst)malloc(sizeof(struct BinarySearchTree))) == NULL){
+			fprintf(stderr, "Insert error: 'malloc'\n");
+			return NULL;
+		}
+
+		root->data = data;
+		root->left = root->right = NULL;
+	}else if(data < root->data){
+		root->left = Insert(root->left, data);
+	}else{
+		root->right = Insert(root->right, data);
+	}
+
+	return root;
+}
+
+bst Delete(bst root, DataType data){
+	bst tmp = NULL;
+
+	if(root == NULL){
+		fprintf(stderr, "Delete error: not found!!!\n");
+		return NULL;
+	}else if(data < root->data){
+		root->left = Delete(root->left, data);
+	}else if(data > root->data){
+		root->right = Delete(root->right, data);
+	}else if(root->left && root->right){
+		tmp = FindMin(root->right);
+		root->data = tmp->data;
+		root->right = Delete(root->right, root->data);
+	}else{
+		if(root->left == NULL){
+			root = root->right;
+		}else if(root->right == NULL){
+			root = root->left;
+		}
+	}
+
+	return root;
+}
+
+int main(void){
+	return 0;
+}
